@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Nace5]
+(
+	[Id] INT IDENTITY (1, 1) NOT NULL, 
+    [nace5] NCHAR(5) NOT NULL, 
+    [nace5_tekst] NCHAR(122) NOT NULL, 
+	CONSTRAINT [PK_Nace5] PRIMARY KEY CLUSTERED ([Id] ASC)
+)

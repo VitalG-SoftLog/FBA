@@ -1,0 +1,48 @@
+﻿@model dynamic
+
+    <table align="center">
+        <tr>
+            <td height="30px">
+                @Html.Raw("Column Name")
+            </td>
+            <td width="20px"></td>
+            <td height ="30px">
+                @Html.Raw("Max Length")
+            </td>
+            <td width="20px"></td>
+            <td height="30px">
+                @Html.Raw("Column Type")
+            </td>
+            <td width="20px"></td>
+            <td height="30px">
+                @Html.Raw("Can be NULL")
+            </td>
+        </tr>
+
+        @{
+            if(Model != null)
+            { 
+                foreach(FBA.Models.DbStruct item in Model)
+                {
+           <tr>
+                <td align="right">
+                    @Html.Raw(item.Name)
+                </td>
+            <td width="20px"></td>
+            <td>
+                @Html.Raw(item.MaxLength.ToString())
+            </td>
+            <td width="20px"></td>
+            <td>
+                @Html.Raw(item.GetSqlType())
+            </td>
+               <td width="20px"></td>
+               <td>
+                   @Html.Raw(item.IsNull.ToString())
+               </td>
+        </tr>
+                }
+            }
+            }
+    </table>
+

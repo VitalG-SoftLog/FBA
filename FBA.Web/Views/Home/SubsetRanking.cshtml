@@ -1,0 +1,22 @@
+﻿@model FBA.Models.SubsetRankingModel
+
+<h3>
+    @Model.Subset
+</h3>
+
+<div class="tables">
+    <table>
+        <tr>
+            <td>#</td>
+            <td>Firma</td>
+            <td>@MetricValueHtmlHelper.RenderMetricHeader(Model.Subset)</td>
+        </tr>
+        @foreach (var item in Model.Rankings) {
+            <tr class="@(item.RefOrgNumber == item.OrgNumber ? "active":"")">
+                <td>#@item.OverallRanking</td>
+                <td>@item.CompanyName</td>
+                <td>@MetricValueHtmlHelper.RenderMetricValue(item)</td>
+            </tr>
+        }
+    </table>
+</div>

@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+
+@using(Html.BeginForm("Analyse", "Csv", FormMethod.Post, new { enctype="multipart/form-data" })) {
+    <label for="file1">Select CSV file</label>
+    <input type="file" id="file1" name="file1" />
+    <br>
+    @Html.CheckBox("flag")
+    @Html.Label(" Data like \"022\" process as string")
+    
+    <br>
+    <input type="submit" value="Analyse">
+}
+
+<br />
+@using(Html.BeginForm("IsertInDB", "Csv", FormMethod.Post, new { enctype="multipart/form-data" })) {
+    <label for="file1">Select CSV file</label>
+    <input type="file" id="file1" name="file1" />
+    <br>
+    <input type="submit" value="IsertInDB">
+}

@@ -1,0 +1,19 @@
+﻿@using FBA.Web.Helpers
+@model FBA.Models.OrgSearchModel
+
+<div class="nace">
+    @Html.PrintTree(model => model.Nace5, Model.Naces.NaceCodes, new { onclick="return naceSelected();"})
+</div>
+<script type="text/javascript">
+    function naceSelected() {
+        debugger;
+        var nace5 = $(this).val();
+        window.opener.$('#@Html.IdFor(model => model.Nace5)').val(nace5);
+        window.close();
+    }    
+</script>
+<style>
+    .nace ul {
+        list-style-type: none;
+    }
+</style>

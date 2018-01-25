@@ -1,0 +1,113 @@
+﻿@using FBA.Web.Helpers
+@model FBA.Models.OrgSearchModel
+
+<div>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { name = "frmSearch", id = "frmSearch"})) {
+        <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OrgId)
+                    @Html.TextBoxFor(model => model.OrgId)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Nace5)
+                    @Html.TextBoxFor(model => model.Nace5)
+                    <input type="button" value="Endre" id="selectNace"/>
+                </td>
+            </tr>
+            @if (Model != null && Model.Rankings != null) {
+                <tr>
+                    <td>
+                        @Html.RadioButtonForSelectList(model => model.AdministrativeLevel, Model.GetAdministrativeLevels())
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td><input type="submit" value="Search" /></td>
+            </tr>
+        </table>
+
+
+        if (Model != null && Model.Rankings != null) {
+            <div>
+                <table>
+                    <tr>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("MARKETSHARE")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("REVENUE")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("EBITDA")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("Number of employees")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("Revenue pr employee")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("Personnel costs pr employee")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.RankingForSubset("Operating Margin")); }</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("MARKETSHARE")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("REVENUE")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("EBITDA")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("Number of employees")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("Revenue pr employee")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("Personnel costs pr employee")); }</td>
+                        <td style="width: 15%; vertical-align: top;">@{ Html.RenderPartial("SubsetRanking", Model.TopRankingForSubset("Operating Margin")); }</td>            
+                    </tr>
+                </table>
+            </div>
+        }
+    }
+</div>
+<div id="naceDialog" title="Select Nace5">
+    @if (Model != null && Model.Naces != null) {
+        <div class="nace">
+            @Html.PrintTree(model => model.Nace5, Model.Naces.NaceCodes)
+        </div>
+    }
+</div>
+<style>
+    .nace ul {
+        list-style-type: none;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#naceDialog').hide();
+        
+        $('#selectNace').click(function(e) {
+            $('#naceDialog').dialog({
+                resizable: false,
+                height: 640,
+                width: 840,
+                modal: true
+            });
+        });
+
+        $('input[name ^= "Nace5"]').on('click', function() {
+            var value = $(this).val();
+            $('#@Html.IdFor(model => model.Nace5)').val(value);
+            $('#naceDialog').dialog('close');
+        });
+
+        $('#@Html.IdFor(model => model.OrgId)').on('keyup', function() {
+            $('#@Html.IdFor(model => model.Nace5)').val('');
+        });
+        
+        $(document).on('paste', function (e) {
+            var pastedText;
+            if (window.clipboardData && window.clipboardData.getData) { // IE
+                pastedText = window.clipboardData.getData('Text');
+            } else if (e.originalEvent.clipboardData &&
+                e.originalEvent.clipboardData.getData) {
+                pastedText = e.originalEvent.clipboardData.getData('text/plain');
+            }
+
+            if (pastedText != undefined && (pastedText.length != 9 || !$.isNumeric(pastedText))) {
+                e.preventDefault();
+                $('#@Html.IdFor(model => model.OrgId)').val('');
+            } else {
+                $('#@Html.IdFor(model => model.OrgId)').val(pastedText);
+                $('#frmSearch').submit();
+
+            }
+        });
+    });
+</script>

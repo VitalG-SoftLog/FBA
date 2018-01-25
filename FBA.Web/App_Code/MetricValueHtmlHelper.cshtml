@@ -1,0 +1,29 @@
+﻿@using System.Globalization
+@using FBA.Shared.Entities
+@helper RenderMetricValue(OrgRankingInfo rankingInfo) {
+    if (rankingInfo.Subset == "MARKETSHARE" ||
+        rankingInfo.Subset == "Operating Margin") {
+        <span>@(rankingInfo.MetricValue.ToString("P1"))</span>
+    } else if (rankingInfo.Subset == "REVENUE" ||
+               rankingInfo.Subset == "Revenue pr employee" ||
+               rankingInfo.Subset == "Personnel costs pr employee" ||
+               rankingInfo.Subset == "EBITDA") {
+        <span>@(rankingInfo.MetricValue.ToString("N0"))</span>
+    } else {
+        <span>@(rankingInfo.MetricValue.ToString("G"))</span>
+    }
+}
+
+@helper RenderMetricHeader(string subset) {
+    if (subset == "MARKETSHARE" ||
+        subset == "Operating Margin") {
+        <span>%</span>
+    } else if (subset == "REVENUE" ||
+               subset == "Revenue pr employee" ||
+               subset == "Personnel costs pr employee" ||
+               subset == "EBITDA") {
+        <span>000 Kr</span>
+    } else {
+        <span>Qty</span>
+    }
+}

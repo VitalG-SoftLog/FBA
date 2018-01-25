@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FBAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="bransjefakta">
+          <Key>
+            <PropertyRef Name="orgnr" />
+          </Key>
+          <Property Name="orgnr" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="dunsnr" Type="int" Nullable="false" />
+          <Property Name="kommunenr" Type="varchar" MaxLength="4" />
+          <Property Name="kommune" Type="char" MaxLength="30" />
+          <Property Name="fylkesnr" Type="varchar" MaxLength="2" />
+          <Property Name="fylke" Type="varchar" MaxLength="16" />
+          <Property Name="nace2" Type="varchar" MaxLength="2" />
+          <Property Name="nace2_tekst" Type="varchar" MaxLength="255" />
+          <Property Name="nace5" Type="varchar" MaxLength="5" />
+          <Property Name="nace5_tekst" Type="varchar" MaxLength="255" />
+          <Property Name="regnskapsår" Type="int" Nullable="false" />
+          <Property Name="omsetning" Type="bigint" />
+          <Property Name="EBITDA" Type="bigint" />
+          <Property Name="Antall_ansatte" Type="int" />
+          <Property Name="Oms_pr_ansatt" Type="bigint" />
+          <Property Name="lonnskost_pr_ansatt" Type="bigint" />
+          <Property Name="driftsmargin" Type="bigint" />
+          <Property Name="juridisk_navn" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'FBA.dbo.Nace' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Nace">
+          <Key>
+            <PropertyRef Name="NaceCode" />
+            <PropertyRef Name="Source" />
+          </Key>
+          <Property Name="NaceCode" Type="char" MaxLength="5" Nullable="false" />
+          <Property Name="Source" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ClassificationText" Type="varchar" MaxLength="165" />
+          <Property Name="EnglishText" Type="varchar" MaxLength="165" />
+          <Property Name="Count" Type="int" />
+          <Property Name="IsHeadline" Type="bit" />
+          <Property Name="IsPublicSector" Type="bit" />
+          <Property Name="Level" Type="int" />
+        </EntityType>
+        <Function Name="GetMarketShareForNace" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nace5" Type="varchar" Mode="In" />
+          <Parameter Name="MunicipalityId" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="orgnr" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+                <Property Name="Value" Type="numeric" Precision="38" Scale="21" />
+                <Property Name="rownum" Type="bigint" />
+                <Property Name="companyName" Type="varchar" MaxLength="100" />
+                <Property Name="Subset" Type="varchar" MaxLength="11" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="GetRankingForOrg" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrgId" Type="numeric" Mode="In" />
+          <Parameter Name="Nace5" Type="varchar" Mode="In" />
+          <Parameter Name="administrativeLevel" Type="int" Mode="In" />
+          <Parameter Name="NumBefore" Type="bigint" Mode="In" />
+          <Parameter Name="NumAfter" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="GetRevenueForNace" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nace5" Type="varchar" Mode="In" />
+          <Parameter Name="MunicipalityId" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="orgnr" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+                <Property Name="Value" Type="bigint" />
+                <Property Name="companyName" Type="varchar" MaxLength="100" />
+                <Property Name="rownum" Type="bigint" />
+                <Property Name="Subset" Type="varchar" MaxLength="7" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <EntityContainer Name="FBAModelStoreContainer">
+          <EntitySet Name="bransjefakta" EntityType="Self.bransjefakta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Nace" EntityType="Self.Nace" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Nace].[NaceCode] AS [NaceCode], 
+    [Nace].[Source] AS [Source], 
+    [Nace].[ClassificationText] AS [ClassificationText], 
+    [Nace].[EnglishText] AS [EnglishText], 
+    [Nace].[Count] AS [Count], 
+    [Nace].[IsHeadline] AS [IsHeadline], 
+    [Nace].[IsPublicSector] AS [IsPublicSector], 
+    [Nace].[Level] AS [Level]
+    FROM [dbo].[Nace] AS [Nace]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FBAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="bransjefakta">
+          <Key>
+            <PropertyRef Name="orgnr" />
+          </Key>
+          <Property Name="orgnr" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="dunsnr" Type="Int32" Nullable="false" />
+          <Property Name="kommunenr" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="kommune" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="fylkesnr" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="fylke" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="nace2" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="nace2_tekst" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="nace5" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="nace5_tekst" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="regnskapsår" Type="Int32" Nullable="false" />
+          <Property Name="omsetning" Type="Int64" />
+          <Property Name="EBITDA" Type="Int64" />
+          <Property Name="Antall_ansatte" Type="Int32" />
+          <Property Name="Oms_pr_ansatt" Type="Int64" />
+          <Property Name="lonnskost_pr_ansatt" Type="Int64" />
+          <Property Name="driftsmargin" Type="Int64" />
+          <Property Name="juridisk_navn" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="bransjefakta" EntityType="Self.bransjefakta" />
+          <EntitySet Name="Nace" EntityType="FBAModel.Nace" />
+        </EntityContainer>
+        <ComplexType Name="GetMarketShareForNace_Result">
+          <Property Type="Decimal" Name="orgnr" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="Decimal" Name="Value" Nullable="true" Precision="38" Scale="21" />
+          <Property Type="Int64" Name="rownum" Nullable="true" />
+          <Property Type="String" Name="Subset" Nullable="false" MaxLength="11" />
+        </ComplexType>
+        <ComplexType Name="GetRevenueForNace_Result">
+          <Property Type="Decimal" Name="orgnr" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="Int64" Name="Value" Nullable="true" />
+          <Property Type="Int64" Name="rownum" Nullable="true" />
+          <Property Type="String" Name="Subset" Nullable="false" MaxLength="7" />
+        </ComplexType>
+        <EntityType Name="Nace">
+          <Key>
+            <PropertyRef Name="NaceCode" />
+            <PropertyRef Name="Source" />
+          </Key>
+          <Property Name="NaceCode" Type="String" Nullable="false" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ClassificationText" Type="String" MaxLength="165" FixedLength="false" Unicode="false" />
+          <Property Name="EnglishText" Type="String" MaxLength="165" FixedLength="false" Unicode="false" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="IsHeadline" Type="Boolean" />
+          <Property Name="IsPublicSector" Type="Boolean" />
+          <Property Name="Level" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FBAModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="bransjefakta">
+            <EntityTypeMapping TypeName="FBAModel.bransjefakta">
+              <MappingFragment StoreEntitySet="bransjefakta">
+                <ScalarProperty Name="juridisk_navn" ColumnName="juridisk_navn" />
+                <ScalarProperty Name="orgnr" ColumnName="orgnr" />
+                <ScalarProperty Name="dunsnr" ColumnName="dunsnr" />
+                <ScalarProperty Name="kommunenr" ColumnName="kommunenr" />
+                <ScalarProperty Name="kommune" ColumnName="kommune" />
+                <ScalarProperty Name="fylkesnr" ColumnName="fylkesnr" />
+                <ScalarProperty Name="fylke" ColumnName="fylke" />
+                <ScalarProperty Name="nace2" ColumnName="nace2" />
+                <ScalarProperty Name="nace2_tekst" ColumnName="nace2_tekst" />
+                <ScalarProperty Name="nace5" ColumnName="nace5" />
+                <ScalarProperty Name="nace5_tekst" ColumnName="nace5_tekst" />
+                <ScalarProperty Name="regnskapsår" ColumnName="regnskapsår" />
+                <ScalarProperty Name="omsetning" ColumnName="omsetning" />
+                <ScalarProperty Name="EBITDA" ColumnName="EBITDA" />
+                <ScalarProperty Name="Antall_ansatte" ColumnName="Antall_ansatte" />
+                <ScalarProperty Name="Oms_pr_ansatt" ColumnName="Oms_pr_ansatt" />
+                <ScalarProperty Name="lonnskost_pr_ansatt" ColumnName="lonnskost_pr_ansatt" />
+                <ScalarProperty Name="driftsmargin" ColumnName="driftsmargin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Nace">
+            <EntityTypeMapping TypeName="FBAModel.Nace">
+              <MappingFragment StoreEntitySet="Nace">
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="IsPublicSector" ColumnName="IsPublicSector" />
+                <ScalarProperty Name="IsHeadline" ColumnName="IsHeadline" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="EnglishText" ColumnName="EnglishText" />
+                <ScalarProperty Name="ClassificationText" ColumnName="ClassificationText" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="NaceCode" ColumnName="NaceCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
